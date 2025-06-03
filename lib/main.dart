@@ -1,122 +1,184 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const QuotesApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class QuotesApp extends StatelessWidget {
+  const QuotesApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Sensible Quotes',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 203, 59, 37),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const QuotePage(title: 'Sensible "Quotes"'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class QuotePage extends StatefulWidget {
+  const QuotePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<QuotePage> createState() => _QuotePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _QuotePageState extends State<QuotePage> {
+  ///#########################################################
+  ///#                LIST OF QUOTES                         #
+  ///#########################################################
+  List<Map<String, String>> quotes = [
+    {
+      'quote': 'What I know is a drop. What I don\'t know is an ocean.',
+      'author': 'Isaac Newton',
+    },
+    {
+      'quote':
+          'The definition of insanity is -- doing the same thing over and over and expecting different results.',
+      'author': 'Albert Einstein',
+    },
+    {
+      'quote': 'I\'d rather die believing, than live doubting.',
+      'author': 'Smith Wigglesworth',
+    },
+    {
+      'quote': 'I can\'t die believing, and I can\'t live doubting.',
+      'author': 'Apostle Grace Lubega',
+    },
+  ];
 
-  void _incrementCounter() {
+  int currentIndex = 0;
+
+  ///#########################################################
+  ///#                NEXT QUOTE FUNCTION                    #
+  ///#########################################################
+  void _showNextQuote() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      if (currentIndex + 1 < quotes.length) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      //  currentIndex = (currentIndex + 1) % quotes.length; // loops back to first
+    });
+  }
+
+  ///#########################################################
+  ///#             PREVIOUS QUOTE FUNCTION                   #
+  ///#########################################################
+  void _showPreviousQuote() {
+    setState(() {
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = quotes.length - 1;
+      }
+      //  currentIndex = (currentIndex + 1) % quotes.length; // loops back to first
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
+      ///------------------------------------------------
+      ///-                  APP BAR                    --
+      ///------------------------------------------------
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        centerTitle: true,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Icon(
+                            Icons.format_quote,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 5,
+
+                          ///===============================
+                          ///           QUOTE
+                          ///===============================
+                          child: Text(
+                            '${quotes[currentIndex]['quote']}',
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        ),
+                        Divider(
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                        ),
+                        Expanded(
+                          flex: 1,
+
+                          ///===============================
+                          ///           AUTHOR
+                          ///===============================
+                          child: Text(
+                            '${quotes[currentIndex]['author']}',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                flex: 1,
+
+                ///===============================
+                ///        QUOTE NAVIGATION
+                ///===============================
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _showPreviousQuote,
+                      child: Icon(Icons.arrow_back),
+                    ),
+                    SizedBox(width: 30),
+                    Text(
+                      '${currentIndex + 1} of ${quotes.length}',
+                      style: TextStyle(
+                        // color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                    ElevatedButton(
+                      onPressed: _showNextQuote,
+                      child: Icon(Icons.arrow_forward),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
